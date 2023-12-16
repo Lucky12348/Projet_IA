@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+    python:
+        container_name: 'data-python'
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+        ports:
+            - '8000:8000'
+        volumes:
+            - ./backend:/app
+        networks:
+            - data-networks
+
+    next:
+        container_name: 'data-next'
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        ports:
+            - '3000:3000'
+        volumes:
+            - ./frontend:/app
+            - /app/node_modules
+            - /app/.pnpm-store
+            - /app/.next
+        depends_on:
+            - python
+        networks:
+            - data-networks
+
+networks:
+    data-networks:
+        driver: bridge
